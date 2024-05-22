@@ -35,6 +35,9 @@ class EmbeddingClient:
         # https://python.langchain.com/docs/integrations/text_embedding/google_generative_ai
         self.client = VertexAIEmbeddings(
             #### YOUR CODE HERE ####
+            model_name=model_name,
+            project=project,
+            location=location
         )
         
     def embed_query(self, query):
@@ -62,8 +65,8 @@ class EmbeddingClient:
 
 if __name__ == "__main__":
     model_name = "textembedding-gecko@003"
-    project = "YOUR PROJECT ID HERE"
-    location = "us-central1"
+    project = "heroic-climber-423918-r1"
+    location = "us-west1"
 
     embedding_client = EmbeddingClient(model_name, project, location)
     vectors = embedding_client.embed_query("Hello World!")
