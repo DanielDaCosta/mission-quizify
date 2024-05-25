@@ -15,7 +15,9 @@ class QuizManager:
         Task: Initialize the QuizManager class with a list of quiz questions.
 
         Overview:
-        This task involves setting up the `QuizManager` class by initializing it with a list of quiz question objects. Each quiz question object is a dictionary that includes the question text, multiple choice options, the correct answer, and an explanation. The initialization process should prepare the class for managing these quiz questions, including tracking the total number of questions.
+        This task involves setting up the `QuizManager` class by initializing it with a list of quiz question objects.
+        Each quiz question object is a dictionary that includes the question text, multiple choice options, the correct answer, and an explanation.
+        The initialization process should prepare the class for managing these quiz questions, including tracking the total number of questions.
 
         Instructions:
         1. Store the provided list of quiz question objects in an instance variable named `questions`.
@@ -24,10 +26,14 @@ class QuizManager:
         Parameters:
         - questions: A list of dictionaries, where each dictionary represents a quiz question along with its choices, correct answer, and an explanation.
 
-        Note: This initialization method is crucial for setting the foundation of the `QuizManager` class, enabling it to manage the quiz questions effectively. The class will rely on this setup to perform operations such as retrieving specific questions by index and navigating through the quiz.
+        Note: This initialization method is crucial for setting the foundation of the `QuizManager` class,
+        enabling it to manage the quiz questions effectively. The class will rely on this setup to perform operations such as
+        retrieving specific questions by index and navigating through the quiz.
         """
         ##### YOUR CODE HERE #####
-        pass # Placeholder
+        self.questions = questions
+        self.total_questions = len(questions)
+
     ##########################################################
 
     def get_question_at_index(self, index: int):
@@ -48,7 +54,8 @@ class QuizManager:
         Task: Adjust the current quiz question index based on the specified direction.
 
         Overview:
-        Develop a method to navigate to the next or previous quiz question by adjusting the `question_index` in Streamlit's session state. This method should account for wrapping, meaning if advancing past the last question or moving before the first question, it should continue from the opposite end.
+        Develop a method to navigate to the next or previous quiz question by adjusting the `question_index` in Streamlit's session state.
+        This method should account for wrapping, meaning if advancing past the last question or moving before the first question, it should continue from the opposite end.
 
         Instructions:
         1. Retrieve the current question index from Streamlit's session state.
@@ -62,7 +69,8 @@ class QuizManager:
         Note: Ensure that `st.session_state["question_index"]` is initialized before calling this method. This navigation method enhances the user experience by providing fluid access to quiz questions.
         """
         ##### YOUR CODE HERE #####
-        pass  # Placeholder for implementation
+        st.session_state['question_index'] += direction
+        st.session_state['question_index'] = st.session_state['question_index']% self.total_questions
     ##########################################################
 
 
@@ -71,8 +79,8 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
-        "location": "us-central1"
+        "project": "heroic-climber-423918-r1",
+        "location": "us-west1"
     }
     
     screen = st.empty()
@@ -112,24 +120,29 @@ if __name__ == "__main__":
             
             # Task 9
             ##########################################################
-            quiz_manager = # Use our new QuizManager class
+            quiz_manager = QuizManager(question_bank)
             # Format the question and display
             with st.form("Multiple Choice Question"):
                 ##### YOUR CODE HERE #####
-                index_question = # Use the get_question_at_index method to set the 0th index
+                index_question = quiz_manager.get_question_at_index(0) # Use the get_question_at_index method to set the 0th index
                 ##### YOUR CODE HERE #####
                 
                 # Unpack choices for radio
                 choices = []
+                print(index_question)
                 for choice in index_question['choices']: # For loop unpack the data structure
+                    print(choice)
                     ##### YOUR CODE HERE #####
                     # Set the key from the index question 
+                    key = choice['key']
+                    value = choice['value']
                     # Set the value from the index question
                     ##### YOUR CODE HERE #####
                     choices.append(f"{key}) {value}")
                 
                 ##### YOUR CODE HERE #####
                 # Display the question onto streamlit
+                st.write(index_question['question'])
                 ##### YOUR CODE HERE #####
                 
                 answer = st.radio( # Display the radio button with the choices
