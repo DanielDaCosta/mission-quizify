@@ -13,8 +13,8 @@ if __name__ == "__main__":
     
     embed_config = {
         "model_name": "textembedding-gecko@003",
-        "project": "YOUR-PROJECT-ID-HERE",
-        "location": "us-central1"
+        "project": "heroic-climber-423918-r1",
+        "location": "us-west1"
     }
     
     # Add Session State
@@ -23,7 +23,8 @@ if __name__ == "__main__":
         ##### YOUR CODE HERE #####
         # Step 1: init the question bank list in st.session_state
         ##### YOUR CODE HERE #####
-    
+        st.session_state['question_bank'] = []
+
         screen = st.empty()
         with screen.container():
             st.header("Quiz Builder")
@@ -43,6 +44,8 @@ if __name__ == "__main__":
                 # Step 2: Set topic input and number of questions
                 ##### YOUR CODE HERE #####
                     
+                topic_input = st.text_input("Topic for Generative Quiz", placeholder="Enter the topic of the document")
+                questions = st.slider("Number of Questions", min_value=1, max_value=10, value=1)
                 submitted = st.form_submit_button("Submit")
                 
                 if submitted:
@@ -52,11 +55,15 @@ if __name__ == "__main__":
                         st.write(f"Generating {questions} questions for topic: {topic_input}")
                     
                     ##### YOUR CODE HERE #####
-                    generator = # Step 3: Initialize a QuizGenerator class using the topic, number of questrions, and the chroma collection
+                    # Step 3: Initialize a QuizGenerator class using the topic, number of questrions, and the chroma collection
+                    generator = QuizGenerator(topic_input, questions, chroma_creator)
                     question_bank = generator.generate_quiz()
                     # Step 4: Initialize the question bank list in st.session_state
+                    st.session_state['question_bank'] = question_bank
                     # Step 5: Set a display_quiz flag in st.session_state to True
+                    st.session_state['display_quiz'] = True
                     # Step 6: Set the question_index to 0 in st.session_state
+                    st.session_state['question_index'] = 0
                     ##### YOUR CODE HERE #####
 
     elif st.session_state["display_quiz"]:
@@ -64,6 +71,7 @@ if __name__ == "__main__":
         st.empty()
         with st.container():
             st.header("Generated Quiz Question: ")
+            question_bank = st.session_state['question_bank']
             quiz_manager = QuizManager(question_bank)
             
             # Format the question and display it
@@ -71,6 +79,7 @@ if __name__ == "__main__":
                 ##### YOUR CODE HERE #####
                 # Step 7: Set index_question using the Quiz Manager method get_question_at_index passing the st.session_state["question_index"]
                 ##### YOUR CODE HERE #####
+                index_question = quiz_manager.get_question_at_index(st.session_state["question_index"])
                 
                 # Unpack choices for radio button
                 choices = []
@@ -94,6 +103,8 @@ if __name__ == "__main__":
                 # Here we use the next_question_index method from our quiz_manager class
                 # st.form_submit_button("Next Question, on_click=lambda: quiz_manager.next_question_index(direction=1)")
                 ##### YOUR CODE HERE #####
+                st.form_submit_button("Next Question", on_click=lambda: quiz_manager.next_question_index(direction=1))
+                st.form_submit_button("Previous Question", on_click=lambda: quiz_manager.next_question_index(direction=-1))
                 
                 if answer_choice and answer is not None:
                     correct_answer_key = index_question['answer']
@@ -102,3 +113,4 @@ if __name__ == "__main__":
                     else:
                         st.error("Incorrect!")
                     st.write(f"Explanation: {index_question['explanation']}")
+
